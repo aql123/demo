@@ -59,9 +59,7 @@
             url:'http://localhost:8080/vipUser/selectAll',
             rownumbers:true,
             striped:true,
-//            fit:true,
             toolbar:'#tb',
-//          singleSelect:true //单选模式
             pagination:true,
             pageSize:2,
             pageList:[1,2,3,4]
@@ -92,18 +90,12 @@
              dataType:'json',
              type:'post',
              success:function (data) {
-                 alert(data.msg);
                  $('#dg').datagrid('reload');
              },
              error:function (data) {
-                 alert('充值成功');
+                 alert('充值失败');
              }
          });
-
-
-
-
-
      }
 </script>
 

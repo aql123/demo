@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import cn.hutool.core.date.DateUtil;
 import com.example.demo.dao.VipUserDao;
 import com.example.demo.dao.consumptionDao;
 import com.example.demo.dao.rechargeDao;
@@ -46,6 +47,7 @@ public class VipUserService {
         recharge.setUserId(vipUser.getId());
         recharge.setMoney(vipUser.getMoney());
         recharge.setName(vipUser.getName());
+        recharge.setTime(DateUtil.today());
         rechargeDao.insert(recharge);
     }
     public void consume(VipUser vipUser){
@@ -62,6 +64,7 @@ public class VipUserService {
         consumption.setUserId(vipUser.getId());
         consumption.setMoney(vipUser.getMoney());
         consumption.setName(vipUser.getName());
+        consumption.setTime(DateUtil.today());
         consumptionDao.insert(consumption);
     }
 }

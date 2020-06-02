@@ -4,6 +4,7 @@ import com.example.demo.model.admin;
 import com.example.demo.service.AdminService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
@@ -17,7 +18,10 @@ import javax.servlet.http.HttpSession;
 public class AdminLoginController {
     @Resource
     private AdminService adminService;
-
+    @GetMapping("main.html")
+    public String main(){
+        return "main";
+    }
     @RequestMapping("login")
     public  String  login_show(){
         return "login";

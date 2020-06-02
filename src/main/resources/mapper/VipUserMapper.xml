@@ -8,12 +8,12 @@
 
     <select id="selectAll" parameterType="com.example.demo.model.VipUser" resultType="com.example.demo.model.VipUser">
         select  * from vipcard
-        <where>
-            AND status="正常"
-            <if test="name!=null" >
-               AND name like concat('%',concat(#{name}),'%')
-            </if>
-        </where>
+<!--        <where>-->
+<!--            AND status="正常"-->
+<!--            <if test="name!=null" >-->
+<!--               AND name like concat('%',concat(#{name}),'%')-->
+<!--            </if>-->
+<!--        </where>-->
     </select>
     <select id="selectByStatus" parameterType="com.example.demo.model.VipUser" resultType="com.example.demo.model.VipUser">
         select * from vipcard where status="挂失"
@@ -37,7 +37,7 @@
                 status=#{status},
             </if>
         </set>
-        where id=#{id}
+        where name=#{name}
     </update>
 
     <update id="recharge" parameterType="com.example.demo.model.VipUser">
@@ -47,7 +47,7 @@
                 money=money+#{money},
             </if>
         </set>
-        where id=#{id}
+        where name=#{name}
     </update>
     <update id="userBuy" parameterType="com.example.demo.model.VipUser">
         UPDATE  vipcard
@@ -55,8 +55,11 @@
             <if test="money!=null">
                 money=money-#{money},
             </if>
+            <if test="integral!=null">
+                integral=integral+#{money},
+            </if>
         </set>
-        where id=#{id}
+        where name=#{name}
     </update>
     <update id="consume" parameterType="com.example.demo.model.VipUser">
         UPDATE  vipcard
@@ -68,7 +71,7 @@
                 integral=integral+#{integral},
             </if>
         </set>
-        where id=#{id}
+        where name=#{name}
     </update>
 
 </mapper>

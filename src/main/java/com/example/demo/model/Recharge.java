@@ -12,7 +12,6 @@ public class Recharge {
     private String name;
     private Integer money;
     private String time;
-    private String phone;
     @TableField("userId")
     private Long userId;
 
@@ -24,13 +23,6 @@ public class Recharge {
         this.userId = userId;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
     public Long getId() {
         return id;

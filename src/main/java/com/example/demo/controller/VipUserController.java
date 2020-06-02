@@ -59,7 +59,7 @@ public class VipUserController {
     @RequestMapping("selectByStatus")
     public Object selectByStatus(VipUser vipUser, Integer page, Integer rows) {
         PageHelper.startPage(page, rows);
-        List<VipUser> lists = vipUserService.selectByStatus(vipUser);
+        List<VipUser> lists = vipUserService.selectAll(vipUser);
         return getObject(lists);
     }
 

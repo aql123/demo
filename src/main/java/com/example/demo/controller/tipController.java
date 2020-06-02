@@ -27,6 +27,9 @@ public class tipController {
     @RequestMapping("selectAll")
     //查询或者获取所有
     public Object selectAll(UserDTO user,Integer page,Integer rows){
+        if(rows==null){
+            rows=10;
+        }
         Object all = null;
         if(null!=user.getSearchFuture()){
             //查未来日期

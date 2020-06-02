@@ -38,18 +38,14 @@ public class tipService {
     //提醒
     public Integer tip(User user) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        if(user.getTip()!=null){
-            //取消提醒
+        if(user.getTip()!=null&&user.getName()!=null){
             if(user.getTip().equals("是")) {
                 wrapper.eq("uid",user.getUid());
-                wrapper.eq("tip", "否");
                 tipDao.update(user, wrapper);
                 return 1;
             }
-            //提醒
             else{
                 wrapper.eq("uid",user.getUid());
-                wrapper.eq("tip", "是");
                 tipDao.update(user, wrapper);
                 return 2;
             }
