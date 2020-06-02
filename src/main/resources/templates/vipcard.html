@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>生日提醒</title>
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css">
+
+    <script type="text/javascript" src="../static/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../static/js/include.js"></script>
+    <script type="text/javascript" src="../static/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+
+<form id="ff" name="ff" method="post">
+    <div style="margin-bottom:10px">
+        <input type="hidden" name="uid" id="uid"
+               style="width: 160px" data-options="label:'卡号',required:false">
+        <input class="easyui-textbox" name="name" id="name"
+               style=" width: 200px"  data-options="label:'姓名',required:true">
+        <select  class="easyui-combobox" name="searchFuture" id="searchFuture" panelMaxHeight="64px"
+                 style=" width: 200px"  data-options="label:'选择日期',required:true, textField:'text',valueField:'future',editable:false ">
+            <option value="">不选择</option>
+            <option>未来三天</option>
+            <option>未来一周</option>
+        </select>
+        <select class="easyui-combobox" name="tip" id="tip" panelMaxHeight="64px"
+                 style=" width: 200px"  data-options="label:'提醒他(她)',required:true, textField:'text',valueField:'tip',editable:false ">
+            <option>是</option>
+            <option>否</option>
+        </select>
+    </div>
+</form>
+
+<div id="tb">
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-search" plian="true" onclick="queryStudent()">查询</a>
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-search" plian="true" onclick="searchFuture()">生日查询</a>
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-edit" plian="true" onclick="editStudent()">编辑</a>
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-save" plian="true" onclick="tipStudent()">提醒</a>
+</div>
+
+<table class="easyui-datagrid" id="dg" name="dg" style="height: auto">
+    <thead>
+    <th field="ck" checkbox="true" ></th>
+    <th field="cid" width="20%" align="center">卡号</th>
+    <th field="name" width="20%" align="center">姓名</th>
+    <th field="phone" width="20%" align="center">电话</th>
+    <th field="birthday" width="212px" align="center">生日</th>
+    <th field="tip" width="20%" align="center">提醒状态</th>
+    </thead>
+</table>
+
+</body>
+<script type="text/javascript">
+    var grid;
+    $(document).ready(function () {
+        grid=$('#dg').datagrid({
+            url:'http://localhost:8080/birth/selectAll',
+            rownumbers:true,
+            striped:true,
+//            fit:true,
+            toolbar:'#tb',
+//          singleSelect:true //单选模式
+            pagination:true,
+            pageSize:2,
+            pageList:[1,2,3,4]
+        });
+    });
+
+    function queryStudent(){
+        $('#dg').datagrid('load',{
+            name:$('#name').val()
+        });
+    }
+
+    function editStudent(){
+        let row=$('#dg').datagrid("getSelected");
+        $('#ff').form('load',{
+            uid: row.uid,
+            name:row.name,
+            cid:row.cid,
+            tip:row.tip
+        });
+        $('#ff').numberbox('disable',true);
+    }
+    function searchFuture(){
+        $('#dg').datagrid('load',{
+           // name:$('#name').val(),
+            searchFuture:$('#searchFuture').combobox('getValue')
+        });
+        // alert(JSON.stringify(data));
+        // $.ajax({
+        //     url:'http://localhost:8080/birth/searchFuture',
+        //     data:data,
+        //     dataType:'json',
+        //     type:'post',
+        //     success:function (data) {
+        //         alert(data.msg);
+        //         $('#dg').datagrid('reload');
+        //     },
+        //     error:function (data) {
+        //         alert('信息更新失败');
+        //     }
+        // });
+    }
+    function tipStudent(){
+        let data=$('#ff').serializeArray();
+        //alert(JSON.stringify(data));
+        $.ajax({
+            url:'http://localhost:8080/birth/tip',
+            data:data,
+            dataType:'json',
+            type:'post',
+            success:function (data) {
+                alert(data.msg);
+                $('#dg').datagrid('reload');
+            },
+            error:function (data) {
+                alert('信息更新失败');
+            }
+        });
+    }
+</script>
+
+</html>

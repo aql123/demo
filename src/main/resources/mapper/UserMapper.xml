@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.UserDao">
+
+
+
+    <sql id="insertUser">name,phone,birthday,cid</sql>
+
+    <select id="selectUserAll" parameterType="com.example.demo.model.User" resultType="com.example.demo.model.User">
+        select * from vipusers
+        <where>
+            <if test="name!=null" >
+                AND name like concat('%',concat(#{name}),'%')
+            </if>
+            <if test="phone!=null" >
+                AND phone like concat('%',concat(#{phone}),'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.demo.model.User" keyProperty="uid" useGeneratedKeys="true">
+        insert into vipusers (<include refid="insertUser" />) values (#{name},#{phone},#{birthday},#{cid})
+    </insert>
+
+    <update id="editUser" parameterType="com.example.demo.model.User">
+        UPDATE  vipusers
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="birthday!=null">
+                birthday=#{birthday},
+            </if>
+            <if test="cid!=null">
+                cid=#{cid},
+            </if>
+        </set>
+        where uid=#{uid}
+    </update>
+
+    <delete id="deleteUsers" parameterType="Long">
+        delete  from  vipusers where uid in
+        <foreach collection="array" item="uid" index="index" open="(" close=")" separator=",">
+            #{uid}
+        </foreach>
+    </delete>
+
+    <select id="selectByBirthday" resultType="com.example.demo.model.User">
+        select name,birthday from vipusers
+    </select>
+</mapper>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>会员管理</title>
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css">
+
+    <script type="text/javascript" src="../static/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../static/js/include.js"></script>
+    <script type="text/javascript" src="../static/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+
+<!--<form id="ff" name="ff" method="post">
+    <div style="margin-bottom:10px">
+        <input type="hidden" name="id" id="id"
+               style="width: 160px" data-options="label:'卡号',required:false">
+        <input class="easyui-textbox" name="name" id="name"
+               style=" width: 200px"  data-options="label:'姓名',required:true">
+        <input class="easyui-numberbox" name="money" id="money"
+               style=" width: 200px"  data-options="label:'余额',required:false,precision:0,min:0">
+        <input class="easyui-numberbox" name="integral" id="integral"
+               style=" width: 200px"  data-options="label:'积分',required:false,precision:0,min:0">
+        &lt;!&ndash; <input class="easyui-textbox" name="status" id="status"
+                style=" width: 200px"  data-options="label:'状态',required:true,precision:0,min:0">&ndash;&gt;
+        <select  class="easyui-combobox" name="status" id="status" panelMaxHeight="64px"
+                 style=" width: 200px"  data-options="label:'状态',required:true, textField:'text',valueField:'id',editable:false ">
+            <option>正常</option>
+            <option>挂失</option>
+        </select>
+    </div>
+</form>-->
+<!-- 根据姓名或手机号进行用户查询 -->
+<div class="toolbar" id="toolbar" name="toolbar">
+    <div class="search-div" style="margin-bottom: 15px">
+        <label>姓名：</label>
+        <input  class="easyui-textbox"  name="name" id="name-search" />
+        <label>联系方式：</label>
+        <input  class="easyui-numberbox"  name="phone" id="phone-search"  />
+        <a href="#" class="easyui-linkbutton"
+           iconCls="icon-search" plian="true" onclick="queryUser()">查询</a>
+    </div>
+</div>
+
+
+<div id="tb">
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-add" plian="true"  id="addBtn">增加</a>
+    <a href="#" class="easyui-linkbutton"
+           iconCls="icon-remove" plian="true" onclick="deleteUser()">删除</a>
+    <a href="#" class="easyui-linkbutton"
+            iconCls="icon-edit" plian="true" id="editBtn" onclick="editUser()">编辑</a>
+    <a href="#" class="easyui-linkbutton"
+            iconCls="icon-save" plian="true">保存</a>
+</div>
+
+<!-- 添加弹出框 -->
+<div class="easyui-dialog" title="新增/编辑" iconCls="icon-edit" modal="true"
+     closed="true" buttons="#dlg-btns" id="dlg" style="width: 280px;height: 210px">
+
+    <form id="fm" method="post">
+        <div class="fitem">
+            <input type="hidden" name="uid" id="uid"
+                   style="width: 160px" data-options="label:'编号',required:false">
+        </div>
+        <div class="fitem">
+            <label>姓名：</label>
+            <input class="easyui-textbox"   name="name" id="name" style="width: 170px" />
+
+        </div>
+        <div class="fitem">
+            <label>联系：</label>
+            <input class="easyui-numberbox" value="联系方式"  name="phone" id="phone" style="width: 170px"/>
+        </div>
+        <div class="fitem">
+            <label>生日：</label>
+            <input class="easyui-datebox" value="生日" name="birthday" id="birthday"  />
+        </div>
+        <div class="fitem">
+            <label>卡号：</label>
+            <input class="easyui-numberbox" value="会员卡号" name="cid" id="cid" style="width: 170px" />
+        </div>
+    </form>
+</div>
+<!-- /添加弹出框 -->
+<!-- 弹出框按钮组-->
+<div id="dlg-btns">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-add" id="insertBtn" onclick="addUser()">添加</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-save" id="saveBtn" onclick="saveUser()">保存</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" id="cancelBtn">取消</a>
+</div>
+<!-- /弹出框 按钮组-->
+<table class="easyui-datagrid" id="dg" name="dg" style="height: auto">
+    <thead>
+    <th field="ck" checkbox="true" ></th>
+    <th field="uid" width="10%" align="center">编号</th>
+    <th field="name" width="19%" align="center">姓名</th>
+    <th field="phone" width="25%"  align="center">联系方式</th>
+    <th field="birthday" width="25%" align="center">生日</th>
+    <th field="cid" width="20%" align="center">会员卡号</th>
+    </thead>
+</table>
+
+
+</body>
+
+<script type="text/javascript">
+    $(function() {
+        //打开弹出框
+        $("#addBtn,#editBtn").click(function(e) {
+            e.preventDefault();
+            $("#dlg").dialog("open");
+        });
+        //关闭弹出框
+        $("#saveBtn, #cancelBtn,#insertBtn").click(function(e) {
+            e.preventDefault();
+            $("#dlg").dialog("close");
+        });
+    });
+</script>
+<script type="text/javascript">
+    var grid;
+    $(document).ready(function () {
+        grid=$('#dg').datagrid({
+            url:'http://localhost:8080/user/selectUserAll',
+            rownumbers:true,
+            striped:true,
+//            fit:true,
+            toolbar:'#tb',
+//          singleSelect:true //单选模式
+            pagination:true,
+            pageSize:2,
+            pageList:[1,2,3,4]
+        });
+    });
+    function addUser(){
+        let  data = $('#fm').serializeArray();
+
+        alert(JSON.stringify(data));
+
+        $.ajax({
+            url: 'http://localhost:8080/user/insertUser',
+            data:data,
+            dataType:'json',
+            type:'post',
+            success:function (data) {
+                alert(data.msg);
+                $('#dg').datagrid('reload');
+
+            },
+            error:function (data) {
+                alert('添加失败');
+            }
+
+        })
+
+
+
+    }
+    function deleteUser(){
+        let ids = getIds(grid,"uid");
+        alert(ids);
+        $.ajax({
+            url: 'http://localhost:8080/user/deleteUsers',
+            data:{
+                ids:ids
+            },
+            success:function (data) {
+                alert(data.msg);
+                grid.datagrid('reload');
+
+            },
+            error:function (data) {
+                alert('删除失败');
+            }
+        })
+
+    }
+
+    function queryUser(){
+        let row =$('#toolbar').serializeArray();
+        $('#dg').datagrid('load',{
+            name:$('#name-search').val(),
+            phone:$('#phone-search').val()
+
+        });
+
+
+    }
+
+    function editUser(){
+         let row=$('#dg').datagrid("getSelected");
+         $('#fm').form('load',{
+             uid: row.uid,
+             name:row.name,
+             phone:row.phone,
+             birthday:row.birthday,
+             cid:row.cid
+         });
+    }
+    function saveUser(){
+         let data=$('#fm').serializeArray();
+         alert(JSON.stringify(data));
+         $.ajax({
+             url:'http://localhost:8080/user/editUser',
+             data:data,
+             dataType:'json',
+             type:'post',
+             success:function (data) {
+                 alert(data.msg);
+                 $('#dg').datagrid('reload');
+             },
+             error:function (data) {
+                 alert('信息更新失败');
+
+             }
+         });
+
+
+     }
+</script>
+
+</html>

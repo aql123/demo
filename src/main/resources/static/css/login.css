@@ -1,0 +1,41 @@
+html{height:100%}
+h1,h3,h4{font-weight:100}
+h1{font-size:50px}
+h3{font-size:16px}
+h4{font-size:24px;text-align:center}
+body.signin{
+    height:auto;
+    background:url(../static/img/111.jpg) no-repeat center fixed;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    -o-background-size:cover;
+    background-size:cover;
+    color:rgba(255,255,255,.95)
+}
+.signinpanel{width:750px;margin:10% auto 0}
+.signinpanel .logopanel{float:none;width:auto;padding:0;background:0 0}
+.signinpanel .signin-info ul{list-style:none;padding:0;margin:20px 0}
+.signinpanel .form-control{display:block;margin-top:15px}
+.signinpanel .uname{background:#fff url(../img/user.png) no-repeat 95% center;color:#333}
+.signinpanel .pword{background:#fff url(../img/locked.png) no-repeat 95% center;color:#333}
+.signinpanel .btn{margin-top:15px}
+.signinpanel form{
+    background:rgba(255,255,255,.2);
+    border:1px solid rgba(255,255,255,.3);
+    -moz-box-shadow:0 3px 0 rgba(12,12,12,.03);
+    -webkit-box-shadow:0 3px 0 rgba(12,12,12,.03);
+    box-shadow:0 3px 0 rgba(12,12,12,.03);
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    padding:30px
+}
+.m-l{margin-left: 150px}
+.my-col-sm-5{left: 60px;}
+.m-b{margin-bottom:15px}
+.m-t{margin-top:20px}
+.m-t-c{text-align:center}
+.no-margin{margin:0!important}
+.btn{margin-top:15px}
+
+

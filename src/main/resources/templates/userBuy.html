@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>余额充值</title>
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css">
+
+    <script type="text/javascript" src="../static/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../static/js/include.js"></script>
+    <script type="text/javascript" src="../static/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+
+<form id="ff" name="ff" method="post">
+    <div style="margin-bottom:10px">
+        <input type="hidden" name="id" id="id"
+               style="width: 160px" data-options="label:'卡号',required:false">
+        <input class="easyui-textbox" name="name" id="name"
+               style=" width: 200px"  data-options="label:'姓名',required:false">
+        <input class="easyui-numberbox" name="money" id="money"
+               style=" width: 200px"  data-options="label:'消费',required:true,precision:0,min:0">
+        <!--<select  class="easyui-combobox" name="status" id="status" panelMaxHeight="64px"
+                 style=" width: 200px"  data-options="label:'状态',required:true, textField:'text',valueField:'id',editable:false ">
+            <option>正常</option>
+            <option>挂失</option>
+        </select>-->
+    </div>
+</form>
+
+<div id="tb">
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-search" plian="true" onclick="queryStudent()">查询</a>
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-edit" plian="true" onclick="editStudent()">编辑</a>
+    <a href="#" class="easyui-linkbutton"
+       iconCls="icon-save" plian="true" onclick="saveStudent()">保存</a>
+</div>
+
+<table class="easyui-datagrid" id="dg" name="dg" style="height: auto">
+    <thead>
+    <th field="ck" checkbox="true" ></th>
+    <th field="id" width="20%" align="center">卡号</th>
+    <th field="name" width="20%" align="center">姓名</th>
+    <th field="money" width="20%" align="center">余额</th>
+    <th field="integral" width="212px" align="center">积分</th>
+    <th field="status" width="20%" align="center">状态</th>
+    </thead>
+</table>
+
+
+</body>
+<script type="text/javascript">
+    var grid;
+    $(document).ready(function () {
+        grid=$('#dg').datagrid({
+            url:'http://localhost:8080/vipUser/selectAll',
+            rownumbers:true,
+            striped:true,
+//            fit:true,
+            toolbar:'#tb',
+//          singleSelect:true //单选模式
+            pagination:true,
+            pageSize:2,
+            pageList:[1,2,3,4]
+        });
+    });
+
+    function queryStudent(){
+        let row =$('#ff').serializeArray();
+        $('#dg').datagrid('load',{
+            name:$('#name').val()
+        });
+    }
+
+    function editStudent(){
+        let row=$('#dg').datagrid("getSelected");
+        $('#ff').form('load',{
+            id: row.id,
+            name:row.name,
+            status:row.status
+        });
+
+
+    }
+    function saveStudent(){
+        let data=$('#ff').serializeArray();
+        alert(JSON.stringify(data));
+        $.ajax({
+            url:'http://localhost:8080/vipUser/vipUserBuy',
+            data:data,
+            dataType:'json',
+            type:'post',
+            success:function (data) {
+                alert(data.msg);
+                $('#dg').datagrid('reload');
+            },
+            error:function (data) {
+                alert('消费成功');
+
+            }
+        });
+
+
+
+
+
+    }
+</script>
+
+</html>
